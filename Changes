@@ -1,5 +1,10 @@
 Revision history for HTML-SearchPage
 
+0.02    2007-06-14
+        - Persistent database selection
+        - Check for empty param_list *after* auto_all and auto_null
+          are applied
+        
 0.01    2007-05-07
         - Change name to HTML::SearchPage
         - Release to CPAN.

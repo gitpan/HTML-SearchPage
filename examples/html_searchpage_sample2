@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-# $Id: html_searchpage_sample2,v 1.1 2007/05/12 16:17:50 canaran Exp $
+# $Id: html_searchpage_sample2,v 1.2 2007/06/11 20:39:18 canaran Exp $
 
 use warnings;
 use strict;
@@ -68,7 +68,7 @@ Payan Canaran <canaran@cshl.edu>
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 ACKNOWLEDGEMENTS
 

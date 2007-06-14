@@ -1,8 +1,8 @@
 package HTML::SearchPage;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-# $Id: SearchPage.pm,v 1.16 2007/05/30 23:54:14 canaran Exp $
+# $Id: SearchPage.pm,v 1.19 2007/06/13 21:26:40 canaran Exp $
 
 use warnings;
 use strict;
@@ -11,6 +11,7 @@ use HTML::SearchPage::Files;
 
 use Carp;
 use CGI;
+use CGI::Session;
 use DBI;
 use List::Util qw(first);
 use LWP::Simple;
@@ -43,6 +44,40 @@ sub new {
 
         my $cgi_params = $self->cgi->Vars;
         $self->cgi_params($cgi_params);
+
+        # Temp dir
+        $params{temp_dir} or croak("A temp_dir param is required!");
+        $self->temp_dir($params{temp_dir});
+
+        $params{temp_dir_eq} or croak("A temp_dir_eq param is required!");
+        $self->temp_dir_eq($params{temp_dir_eq});
+
+        # Cookie params
+        my $cookie =
+          defined $params{cookie} ? $params{cookie} : 'html-searchpage';
+        $self->cookie($cookie);
+
+        my $cookie_expires_in_min =
+          defined $params{cookie_expires_in_min} 
+          ? $params{cookie_expires_in_min} 
+          : 30;
+        $self->cookie_expires_in_min($cookie_expires_in_min);
+
+        # Session id from URL/cookie
+        my $session_id = 
+               $self->cgi_params->{session_id}
+            || $self->cgi->cookie($self->cookie)
+            || undef;
+
+        my $session_dir = $self->temp_dir . '/sessions';
+        my $session =
+          CGI::Session->new('file', $session_id, {Directory => $session_dir});
+
+        if ($session_id && ($session_id ne $session->id)) {
+            croak("Cannot create session!");
+        }
+        $self->session_id($session->id);
+        $self->session($session);
 
         # Required params
         $params{db_access_params} or croak("A db_access_params is required!");
@@ -159,8 +194,10 @@ sub new {
         $self->db_access_params($db_access_params);
 
         # -- Extract params
-        my $database = $self->cgi_params->{database};
-
+        my $database = 
+               $self->cgi_params->{database}
+            || $self->session->param('db_selected');
+        
         my @available_databases = (   ref $db_access_params->{database} 
                                    && ref $db_access_params->{database} eq 'ARRAY') 
                                 ? @{$db_access_params->{database}}
@@ -190,6 +227,8 @@ sub new {
         $self->dbh($dbh);
         $self->db_selected($database);
         $self->db_display($selected_db->{display});
+        
+        $self->session->param('db_selected', $database);
 
         # Adjust URL if "go_to_results"
         if ($self->go_to_results) {
@@ -296,7 +335,17 @@ sub display_page {
 sub display_error_page {
     my ($self, $error) = @_;
 
-    print $self->cgi->header;
+    my $cookie                 = $self->cookie;
+    my $session_id             = $self->session_id;
+    my $cookie_expires_in_min  = $self->cookie_expires_in_min;
+
+    my $cookie_obj = CGI::cookie(
+        -name    => $cookie,
+        -value   => $session_id,
+        -expires => "+${cookie_expires_in_min}m",
+    );
+
+    print $self->cgi->header(-cookie => $cookie_obj);
 
     my $header = $self->_content($self->header);
     my $css    = $self->_content($self->css);
@@ -653,9 +702,10 @@ sub _generate_search_form {
                 my @resolved_params =
                   $self->run_distinct_statement($param_statement);
                 foreach (@resolved_params) {
+                    next if !defined $_;
                     $_ = $self->url_encode($_);
+                    push(@resolved_param_list, $_);
                 }
-                push(@resolved_param_list, @resolved_params);
             }
             else { push(@resolved_param_list, $param_statement); }
         }
@@ -666,6 +716,13 @@ sub _generate_search_form {
         unshift @param_list, 'null:NULL' if $auto_null;
         unshift @param_list, 'all:ALL'   if $auto_all;
 
+        # Make sure param_list is populated 
+        if (   $param_type eq 'drop_down'
+            or $param_type =~ /^scrolling_list:\d+$/) {
+            croak("Parameter field ($label) has empty param_list!") 
+                unless @param_list;
+        }                               
+        
         # (iii) Auto-complete display names for param_list
         foreach (@operator_list, @param_list) { 
             $_ = "$1:$1" if ($_ && $_ =~ /^([^:]+)$/); 
@@ -1765,6 +1822,16 @@ sub _print_page {
     my $footer      = $self->_content($self->footer);
     my $temp_dir_eq = $self->temp_dir_eq;
 
+    my $cookie                 = $self->cookie;
+    my $session_id             = $self->session_id;
+    my $cookie_expires_in_min  = $self->cookie_expires_in_min;
+
+    my $cookie_obj = CGI::cookie(
+        -name    => $cookie,
+        -value   => $session_id,
+        -expires => "+${cookie_expires_in_min}m",
+    );
+
     my $output_format = $self->cgi_params->{output_format} || 'html';
 
     my $results_anchor =
@@ -1774,7 +1841,7 @@ sub _print_page {
                           # are no results
 
     if ($output_format eq 'html') {
-        print $self->cgi->header;
+        print $self->cgi->header(-cookie => $cookie_obj);
         print <<HTML;
 <html>
     <head>
@@ -1798,27 +1865,42 @@ HTML
     }
 
     elsif ($output_format eq 'excel') {
-        print $self->cgi->header(-type => 'application/vnd.ms-excel');
+        print $self->cgi->header(
+            -cookie => $cookie_obj,
+            -type   => 'application/vnd.ms-excel'
+        );
         print $formatted_data;
     }
 
     elsif ($output_format eq 'csv') {
-        print $self->cgi->header(-type => 'text/comma-separated-values');
+        print $self->cgi->header(
+            -cookie => $cookie_obj,
+            -type   => 'text/comma-separated-values'
+        );
         print $formatted_data;
     }
 
     elsif ($output_format eq 'tab') {
-        print $self->cgi->header(-type => 'text/tab-separated-values');
+        print $self->cgi->header(
+            -cookie => $cookie_obj,
+            -type   => 'text/tab-separated-values'
+        );
         print $formatted_data;
     }
 
     elsif ($output_format eq 'text') {
-        print $self->cgi->header(-type => 'text/plain');
+        print $self->cgi->header(
+            -cookie => $cookie_obj,
+            -type   => 'text/plain'
+        );
         print $formatted_data;
     }
 
     else {
-        print $self->cgi->header(-type => 'text/plain');
+        print $self->cgi->header(
+            -cookie => $cookie_obj,
+            -type   => 'text/plain'
+        );
         print $formatted_data;
     }
 
@@ -2035,6 +2117,18 @@ sub cgi_params {
     return $self->{cgi_params};
 }
 
+sub cookie {
+    my ($self, $value) = @_;
+    $self->{cookie} = $value if @_ > 1;
+    return $self->{cookie};
+}
+
+sub cookie_expires_in_min {
+    my ($self, $value) = @_;
+    $self->{cookie_expires_in_min} = $value if @_ > 1;
+    return $self->{cookie_expires_in_min};
+}
+
 sub count {
     my ($self, $value) = @_;
     $self->{count} = $value if @_ > 1;
@@ -2203,6 +2297,18 @@ sub search_form {
     return $self->{search_form};
 }
 
+sub session {
+    my ($self, $value) = @_;
+    $self->{session} = $value if @_ > 1;
+    return $self->{session};
+}
+
+sub session_id {
+    my ($self, $value) = @_;
+    $self->{session_id} = $value if @_ > 1;
+    return $self->{session_id};
+}
+
 sub show_search_url {
     my ($self, $value) = @_;
     $self->{show_search_url} = $value if @_ > 1;
@@ -2296,6 +2402,9 @@ The following parameters are optional.
 
  header                  HTML header in views           scalar(i)    ''
  footer                  HTML footer in views           scalar(i)    ''
+ cookie                  Name of cookie                 scalar       html-searchpage
+ cookie_expires_in_min   Expiration tim eof cookie      scalar       30
+                                                        (number)
  css                     CSS for views                  scalar(i)    ''
  instructions            Instructions for views         scalar(i)    ''
  distinct                Make SQL query "distinct"      0|1          0
@@ -2369,7 +2478,9 @@ get/set after object instantiation.
                        retrieving results
  search_form           HTML code for generated search  scalar
                        form
- super_output_headers  Headers and super                hashref
+ session               Session object                  CGI::Session ref
+ session_id            Session id                      scalar
+ super_output_headers  Headers and super               hashref
                        headers
 
 =head1 OTHER
@@ -2401,6 +2512,8 @@ Alternatively, a set of databases can be specified and can be addressed by "data
      ],
  }
 
+When multiple databases are provided, database selection is persistent between pages that use HTML::SearchPage. This feature requires cookies to be enabled. 
+
 =head1 AUTHOR
 
 Payan Canaran <canaran@cshl.edu>
@@ -2409,7 +2522,7 @@ Payan Canaran <canaran@cshl.edu>
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 ACKNOWLEDGEMENTS
 

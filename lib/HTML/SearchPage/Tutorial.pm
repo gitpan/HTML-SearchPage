@@ -1,8 +1,8 @@
 package HTML::SearchPage::Tutorial;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-# $Id: Tutorial.pm,v 1.7 2007/05/30 19:02:29 canaran Exp $
+# $Id: Tutorial.pm,v 1.8 2007/06/11 20:40:43 canaran Exp $
 
 use warnings;
 use strict;
@@ -362,7 +362,7 @@ The module also supports simple non-interactive displays. For example, the follo
 
  our $VERSION = '0.01';
 
- # $Id: Tutorial.pm,v 1.7 2007/05/30 19:02:29 canaran Exp $
+ # $Id: Tutorial.pm,v 1.8 2007/06/11 20:40:43 canaran Exp $
 
  use warnings;
  use strict;
@@ -434,7 +434,7 @@ Please report them.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 ACKNOWLEDGEMENTS
 

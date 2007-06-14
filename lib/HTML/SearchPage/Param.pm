@@ -1,8 +1,8 @@
 package HTML::SearchPage::Param;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-# $Id: Param.pm,v 1.4 2007/05/30 23:54:14 canaran Exp $
+# $Id: Param.pm,v 1.6 2007/06/13 21:27:00 canaran Exp $
 
 use warnings;
 use strict;
@@ -44,8 +44,14 @@ sub new {
                 or $param_type =~ /^text:\d+$/);
         $self->param_type($param_type);
 
-        my $param_list =
-          ref $params{param_list} ? $params{param_list} : [$params{param_list}];
+        my $param_list = [];
+        if (defined $params{param_list} && ref $params{param_list}) {
+            $param_list = $params{param_list};
+        }
+        elsif (defined $params{param_list}) {
+            $param_list = [$params{param_list}];
+        }
+        
         my $valid_param_count = 0;
         if (@$param_list) {
             foreach my $value (@$param_list) {
@@ -59,9 +65,12 @@ sub new {
                   );
             }
         }
-        if (!$valid_param_count && $self->param_type !~ /^text:\d+$/) {
-            croak("Valid param_list values are required!");
-        }
+
+        # *** Disabled; now handled by SearchPage.pm ***
+        # if (!$valid_param_count && $self->param_type !~ /^text:\d+$/) {
+        #     croak("Valid param_list values are required!");
+        # }
+
         $self->param_list($param_list);
 
         # Optional params
@@ -303,7 +312,7 @@ Payan Canaran <canaran@cshl.edu>
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 ACKNOWLEDGEMENTS
 

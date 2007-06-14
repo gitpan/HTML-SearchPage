@@ -1,8 +1,8 @@
 package HTML::SearchPage::Files;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-# $Id: Files.pm,v 1.4 2007/05/30 19:02:29 canaran Exp $
+# $Id: Files.pm,v 1.5 2007/06/11 20:40:43 canaran Exp $
 
 use warnings;
 use strict;
@@ -222,7 +222,7 @@ CONTENT
     $files{'searchpage-main.css'}{'type'}    = 'ascii';
     $files{'searchpage-main.css'}{'content'} = <<'CONTENT';
 /*  Author: Payan Canaran <canaran@cshl.edu> */
-/*  $Id: Files.pm,v 1.4 2007/05/30 19:02:29 canaran Exp $ */
+/*  $Id: Files.pm,v 1.5 2007/06/11 20:40:43 canaran Exp $ */
 /*  Copyright 2005-2007 Cold Spring Harbor Laboratory */
 
 /* aqua, black, blue, fuchsia, gray, green, lime, maroon, navy, olive, purple, red, silver, teal, yellow, white */
@@ -386,7 +386,7 @@ Payan Canaran <canaran@cshl.edu>
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 ACKNOWLEDGEMENTS
 
