@@ -1,8 +1,8 @@
 package HTML::SearchPage;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
-# $Id: SearchPage.pm,v 1.19 2007/06/13 21:26:40 canaran Exp $
+# $Id: SearchPage.pm,v 1.23 2007/07/02 14:53:13 canaran Exp $
 
 use warnings;
 use strict;
@@ -73,9 +73,7 @@ sub new {
         my $session =
           CGI::Session->new('file', $session_id, {Directory => $session_dir});
 
-        if ($session_id && ($session_id ne $session->id)) {
-            croak("Cannot create session!");
-        }
+        # Session id may change at this step
         $self->session_id($session->id);
         $self->session($session);
 
@@ -1298,7 +1296,12 @@ sub _retrieve_data {
       || croak("Cannot prepare statement ($statement)!");
     $sth->execute() || croak("Cannot execute statement ($statement)!");
 
-    while (my @row = $sth->fetchrow_array) { push @data, \@row; }
+    while (my @row = $sth->fetchrow_array) { 
+        foreach (@row) {
+            $_ = '' unless defined $_;
+        }    
+        push @data, \@row; 
+    }
 
     # Store in the object
     $self->data(\@data);
@@ -1796,7 +1799,7 @@ sub _get_column_lengths {
     foreach my $row_ref (@data) {
         my @row = @{$row_ref};
         foreach my $i (0 .. $#row) {
-            if (length($row[$i]) > $index[$i]) {
+            if (!defined $index[$i] || length($row[$i]) > $index[$i]) {
                 $index[$i] = length($row[$i]);
             }
         }
@@ -2351,7 +2354,7 @@ __END__
 
 =head1 NAME
 
-HTML::SearchPage - Generic framework for web-based search pages
+HTML::SearchPage - Generic framework for building web-based search pages
 
 =head1 SYNOPSIS
 

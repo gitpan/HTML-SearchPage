@@ -1,5 +1,10 @@
 Revision history for HTML-SearchPage
 
+0.03    2007-MM-DD
+        - Handle undef values in text dumps
+        - Add CGI::Session to requirements
+		- Update abstracts
+
 0.02    2007-06-14
         - Persistent database selection
         - Check for empty param_list *after* auto_all and auto_null

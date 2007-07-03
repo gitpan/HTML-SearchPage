@@ -1,8 +1,8 @@
 package HTML::SearchPage::Param;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
-# $Id: Param.pm,v 1.6 2007/06/13 21:27:00 canaran Exp $
+# $Id: Param.pm,v 1.7 2007/06/26 21:22:57 canaran Exp $
 
 use warnings;
 use strict;
@@ -312,7 +312,7 @@ Payan Canaran <canaran@cshl.edu>
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =head1 ACKNOWLEDGEMENTS
 
