@@ -1,8 +1,8 @@
 package HTML::SearchPage;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
-# $Id: SearchPage.pm,v 1.23 2007/07/02 14:53:13 canaran Exp $
+# $Id: SearchPage.pm,v 1.24 2007/09/19 21:30:18 canaran Exp $
 
 use warnings;
 use strict;
@@ -2525,7 +2525,7 @@ Payan Canaran <canaran@cshl.edu>
 
 =head1 VERSION
 
-Version 0.02
+Version 0.04
 
 =head1 ACKNOWLEDGEMENTS
 

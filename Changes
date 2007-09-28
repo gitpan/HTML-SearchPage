@@ -1,8 +1,11 @@
 Revision history for HTML-SearchPage
 
-0.03    2007-MM-DD
-        - Handle undef values in text dumps
+0.04    2007-09-28
         - Add CGI::Session to requirements
+
+0.03    2007-07-03
+        - Handle undef values in text dumps
+        - Add CGI::Session to requirements (?)
 		- Update abstracts
 
 0.02    2007-06-14

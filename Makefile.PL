@@ -11,6 +11,7 @@ WriteMakefile(
     PREREQ_PM => {
         'Test::More'              => 0,
         'CGI'                     => 0,
+        'CGI::Session'            => 0,
         'DBI'                     => 0,
         'List::Util'              => 0,
         'LWP::Simple'             => 0,
