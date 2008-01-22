@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME                => 'HTML::SearchPage',
-    AUTHOR              => 'Payan Canaran <canaran@cshl.edu>',
+    AUTHOR              => 'Payan Canaran <pcanaran@cpan.org>',
     VERSION_FROM        => 'lib/HTML/SearchPage.pm',
     ABSTRACT_FROM       => 'lib/HTML/SearchPage.pm',
     PL_FILES            => {},

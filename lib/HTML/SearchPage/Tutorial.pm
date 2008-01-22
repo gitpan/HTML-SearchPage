@@ -1,6 +1,6 @@
 package HTML::SearchPage::Tutorial;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # $Id: Tutorial.pm,v 1.10 2007/09/19 21:30:18 canaran Exp $
 
@@ -426,7 +426,7 @@ Please refer to HTML::SearchPage for a list of all parameters.
 
 =head1 AUTHOR
 
-Payan Canaran <canaran@cshl.edu>
+Payan Canaran <pcanaran@cpan.org>
 
 =head1 BUGS
 
@@ -434,7 +434,7 @@ Please report them.
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =head1 ACKNOWLEDGEMENTS
 

@@ -1,6 +1,6 @@
 package HTML::SearchPage;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # $Id: SearchPage.pm,v 1.24 2007/09/19 21:30:18 canaran Exp $
 
@@ -2519,13 +2519,13 @@ When multiple databases are provided, database selection is persistent between p
 
 =head1 AUTHOR
 
-Payan Canaran <canaran@cshl.edu>
+Payan Canaran <pcanaran@cpan.org>
 
 =head1 BUGS
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =head1 ACKNOWLEDGEMENTS
 

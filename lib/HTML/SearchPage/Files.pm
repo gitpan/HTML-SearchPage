@@ -1,6 +1,6 @@
 package HTML::SearchPage::Files;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # $Id: Files.pm,v 1.7 2007/09/19 21:30:18 canaran Exp $
 
@@ -221,7 +221,7 @@ CONTENT
     
     $files{'searchpage-main.css'}{'type'}    = 'ascii';
     $files{'searchpage-main.css'}{'content'} = <<'CONTENT';
-/*  Author: Payan Canaran <canaran@cshl.edu> */
+/*  Author: Payan Canaran <pcanaran@cpan.org> */
 /*  $Id: Files.pm,v 1.7 2007/09/19 21:30:18 canaran Exp $ */
 /*  Copyright 2005-2007 Cold Spring Harbor Laboratory */
 
@@ -380,13 +380,13 @@ HTML::SearchPage::Tutorial for detailed usage information.
 
 =head1 AUTHOR
 
-Payan Canaran <canaran@cshl.edu>
+Payan Canaran <pcanaran@cpan.org>
 
 =head1 BUGS
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =head1 ACKNOWLEDGEMENTS
 

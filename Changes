@@ -1,5 +1,8 @@
 Revision history for HTML-SearchPage
 
+0.05    2008-01-21
+        - Change email address
+        
 0.04    2007-09-28
         - Add CGI::Session to requirements
 

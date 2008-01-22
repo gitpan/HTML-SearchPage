@@ -1,7 +1,7 @@
 -- Sample SQL table and data for HTML::SearchPage
--- Author: Payan Canaran <canaran@cshl.edu>
+-- Author: Payan Canaran <pcanaran@cpan.org>
 -- Copyright (c) 2005-2007 Cold Spring Harbor Laboratory
--- Version 0.04
+-- Version 0.05
 
 DROP TABLE IF EXISTS `html_searchpage_experiment`;
 

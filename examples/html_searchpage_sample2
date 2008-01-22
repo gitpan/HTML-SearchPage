@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # $Id: html_searchpage_sample2,v 1.4 2007/09/19 21:30:18 canaran Exp $
 
@@ -62,13 +62,13 @@ Please refer to HTML::SearchPage::Tutorial for details on this script.
 
 =head1 AUTHOR
 
-Payan Canaran <canaran@cshl.edu>
+Payan Canaran <pcanaran@cpan.org>
 
 =head1 BUGS
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =head1 ACKNOWLEDGEMENTS
 
